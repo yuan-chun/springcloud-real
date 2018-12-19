@@ -1,0 +1,39 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8888/eureka/
+    #    保证缓存数据的有效性，调用者会定时（默认值为30s）向注册中心更新实例，更新调用方本地缓存
+    registry-fetch-interval-seconds: 1
+  instance:
+#     下面两个配置是在提供方配置
+#    //服务实例会通过心跳（默认值为30s)续约的方式向Eureka Server定时更新自己的状态
+    lease-renewal-interval-in-seconds: 1
+#    //租期到期时间（默认90秒）,如果发现实例在在一定时间（默认值为90s）内没有收到心跳，则会注销此实例，至少大于leaseRenewalIntervalInSeconds
+    lease-expiration-duration-in-seconds: 3
+server:
+#  模拟集群模式，可以在本地修改port启动多个 8100，8101，8102
+  port: 8101
+spring:
+  application:
+    name: order-service-impl
+#    请求远程服务响应时间
+ribbon:
+  ReadTimeout: 1000
+  ConnectTimeout: 1000
+#  MaxAutoRetries: 2 #同一台实例最大重试次数,不包括首次调用，
+#  MaxAutoRetriesNextServer: 1 #重试负载均衡其他的实例最大重试次数,不包括首次调用
+#  OkToRetryOnAllOperations: false  #是否所有操作都重试
+#hystrix的超时时间
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: false
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 9000
+#    实现feign接口方式开始服务降级
+feign:
+  hystrix:
+    enabled: true
